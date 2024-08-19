@@ -29,11 +29,11 @@ do
         ;;
         3) eliminarRegistro
         ;;
-        4) 
+        4) insertarRegistro
         ;;
-        5) 
+        5) modTB
         ;;
-        6) 
+        6) verTB
         ;;
         7) exit
         ;;
