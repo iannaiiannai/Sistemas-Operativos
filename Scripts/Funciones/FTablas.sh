@@ -2,7 +2,7 @@
 
 source ./variables.sh
 
-
+nulo_o_no=""
 a="0"
 declare -a datos
 declare -a nombres
@@ -41,9 +41,11 @@ tipoDatos(){
 #Verifica que las operaciones sean exitosas, los "$números" cumplen la función de un parámetro
 check(){
     if [ "$1" -eq 0 ]; then
-            echo "$2"
+            echo "$2"}
+	    nulo_o_no="0"
     else
             echo "$3"
+	    nulo_o_no="1"
     fi
 }
 
@@ -78,6 +80,7 @@ BDexist(){
 }
 
 TBexist(){
+	nulo_o_no="0"
 	esta=$(mysql -u "$us" -p"$ps" -h "localhost" -sse "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA = '$db' AND TABLE_NAME = '$nombre';" 2>/dev/null)
 	check "$esta" "$1" "$2"
 	tb="$nombre"
@@ -256,17 +259,33 @@ eliminarRegistro(){
 	mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -e"SHOW TABLES;" 2</dev/null
 	check "$?" "Error." "" 
 	selTB
-	echo ""
-	echo "Se mostrarán los campos de esa tabla: "
-	while true; do
-		read -p "Ingrese nombre del campo: "
-		esta=$(mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -sse "SELECT * FROM $tb WHERE campo1 = '$campo';")
-		if [[ "$esta" -eq 0 ]]; then
-			echo SI
-		else
-			echo NO
-		fi
-	done
+ 	if [ "$nulo_o_no" == "0" ]; then
+  		exit
+    	else
+		echo ""
+		echo "Se mostrará/n el/los campo/s primario/s de esa tabla: "
+  		mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -e"SELECT * FROM $bd.$tb;"
+		while true; do
+			read -p "Ingrese nombre del campo: "
+			esta=$(mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -sse "SELECT * FROM $tb WHERE "$campo";")
+			if [[ "$esta" -eq 1 ]]; then
+				while true; do
+					read -p "Ingrese el valor del registro a borrar: " valor
+					esta=$(mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -sse "SELECT * FROM $tb WHERE $campo = '$valor';")
+					if [[ "$esta" -eq 1 ]]; then
+						mysql -u "$us" -p"$ps" -h "localhost" -D "$bd" -sse"DELETE FROM $bd.$tb WHERE $campo = '$valor';"
+      						check "$?" "Registro borrado exitosamente." "No fue posible borrar el registro."
+					else
+						echo "No se pudo borrar el registro."
+					fi
+           				break
+				done
+			else
+				echo "Ingrese un campo válido"
+			fi
+   			break
+		done
+  	fi
 }
 
 
