@@ -288,5 +288,12 @@ eliminarRegistro(){
   	fi
 }
 
-
-#DELETE FROM $tb WHERE `$ta
+insertarRegistro(){
+	echo "Insertar registros
+}
+modTB(){
+	echo "Modificar tabla"
+}
+verTB(){
+	echo "Ver tablas"
+}
