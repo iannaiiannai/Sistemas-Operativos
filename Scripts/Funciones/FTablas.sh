@@ -421,3 +421,4 @@ verTB(){
 #-N: Omite los encabezados de columna.
 #tr '\n' ' ': "Corta los datos de salida" y cambia el salto de línea del formato tabla por un espacio
 
+#if [[ $bisiesto % 4 == 0 &&  bisiesto % 100 != 0 || bisiesto % 400 == 0 ]]; then
