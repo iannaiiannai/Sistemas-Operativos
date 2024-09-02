@@ -73,7 +73,7 @@ do
         5) echo "-- Hasta luego --"
            echo ""
            echo '#!/bin/bash' > variables.sh
-           #Una vez cerrada finalizada la ejecución del script, borra la información de inicio de sesión.
+           #Una vez finalizada la ejecución del script, borra la información de inicio de sesión.
 
         exit
         ;;
